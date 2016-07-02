@@ -87,11 +87,23 @@ module JavaBuildpack
       # @return [Void]
       def download(version, uri, name = @component_name)
         download_start_time = Time.now
-        print "-----> Downloading #{name} #{version} from #{uri.sanitize_uri} "
-
-        JavaBuildpack::Util::Cache::ApplicationCache.new.get(uri) do |file, downloaded|
-          puts downloaded ? "(#{(Time.now - download_start_time).duration})" : '(found in cache)'
-          yield file
+        #print "#{uri}\n"
+        #print "asdf\n"
+        
+        #print "-----> Downloading #{name} #{version} from https://s3-us-west-2.amazonaws.com/appdynamics-java-agent/JavaAgent-v4.1.10.0.zip"
+        #print "-----> Downloading #{name} #{version} from #{uri.sanitize_uri} "
+        if uri.include?('app-dynamics')
+          print "test data\n"
+          JavaBuildpack::Util::Cache::ApplicationCache.new.get("https://s3-us-west-2.amazonaws.com/appdynamics-java-agent/JavaAgent-v4.1.10.0.zip") do |file, downloaded|
+            puts downloaded ? "(#{(Time.now - download_start_time).duration})" : '(found in cache)'
+            yield file
+          end
+        else
+          print "#{uri}\n"
+          JavaBuildpack::Util::Cache::ApplicationCache.new.get(uri) do |file, downloaded|
+            puts downloaded ? "(#{(Time.now - download_start_time).duration})" : '(found in cache)'
+            yield file
+          end
         end
       end
 
